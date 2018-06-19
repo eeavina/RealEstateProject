@@ -1,0 +1,52 @@
+﻿@model RealEstateProjectUI.Models.HomeIndexViewModel
+
+@*this partial view is called from the HomeController and receives a HomeIndexViewModel object*@
+
+@*one-time message in case of a successful search*@
+@if (Model.AdModelsList.Any())
+{
+    <h3>Az alábbi hirdetéseket találtuk a keresésedre:</h3>
+}
+
+@*draws the items of the ad list in bootstrap thumbnails*@
+@foreach (var ad in Model.AdModelsList)
+{
+    <div class="col-xs-12 col-sm-6 col-md-4">
+        <div class="thumbnail thumbnail-style">
+            @*check if the ad was saved with or without picture*@
+            @if (ad.PictureId == null)
+            {
+                <div class="center-block inner-thumbnail">
+                    <img class="img-responsive center-block image-thumbnail" src="@Url.Content("~/Content/Images/house2.png")" alt="Images"/>
+                </div>
+            }
+            else
+            {
+                <div class="center-block inner-thumbnail">
+                    <img class="img-responsive center-block image-thumbnail" src="@ad.SourceString" alt="Images"/>
+                </div>
+            }
+            <div class="">
+                <h4 class="text-center h4-thumbnail">@ad.Title</h4>
+                <h6 class="text-center">Ár: @ad.Price millió Ft | Méret: @ad.Size nm</h6>
+                <h6 class="text-center">Budapest, @ad.District,  @ad.Street </h6>
+                <a href='@Url.Action("Details", "Ad", new { id = ad.Id })' class="a-thumbnail">
+                    <input type="button" value="Megnézem  &raquo;" class="btn btn-primary btn-lg center-block" />
+                </a>
+            </div>
+        </div>
+    </div>
+}
+
+@*one-time additional div in case of a successful search*@
+@if (Model.AdModelsList.Any())
+{
+    <div></div>
+}
+
+@*message in case of an unsuccesful search*@
+@if (!Model.AdModelsList.Any())
+{
+    <h3>Sajnáljuk...</h3>
+    <p>A jelek szerint nincs találat erre a keresésre.</p>
+}

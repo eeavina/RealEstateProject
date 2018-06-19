@@ -1,0 +1,137 @@
+﻿@model RealEstateProjectUI.Models.HomeIndexViewModel
+
+@*certain lines that are commented are intentionally left in the code for reviewing and comparison purposes; to be deleted when the software is done*@
+@*bootstrap 3*@
+
+@{
+    ViewBag.Title = "Kezdőlap";
+}
+
+@*display this section when we have a user logged in*@
+@if (Session["UserRole"]?.ToString() == "admin" || Session["UserRole"]?.ToString() == "advertiser")
+{
+    @Html.AntiForgeryToken();   //new addition
+
+    <div class="jumbotron">
+        <h1>IngatlanPiac</h1>
+        <p class="lead">Sikeres belépés. Böngéssz lentebb a budapesti ingatlanok között:</p>
+
+        @*rendering the _AdSearchForm partial view that will draw search bars and a button;
+            button click calls the HomeController/SearchAds action*@
+        @{ Html.RenderPartial("~/Views/Home/_AdSearchForm.cshtml"); }
+
+        @*this div is filled by the _SearchAds partial view once the button click event of
+            the above _AdSearchForm partial view is called*@
+        <div class="container-fluid">
+            <div class="row">
+                <div id="ads-data">
+                </div>
+                <div></div>
+            </div>
+        </div>
+        <hr />
+
+        @*this container will be used for displaying the ads with an iteration through the items in the database*@
+        <div class="container-fluid">
+            <div class="row">
+                <h3>Az adatbázisunkban elérhető összes hirdetés:</h3>
+
+                @foreach (var ad in Model.AdModelsList)
+                {
+                    //populate a thumbnail form with the data
+                    <div class="col-xs-12 col-sm-6 col-md-4">
+                        <div class="thumbnail thumbnail-style">
+                            @*check if the ad was saved with or without picture*@
+                            @if (ad.PictureId == null)
+                            {
+                                <div class="center-block inner-thumbnail">
+                                    <img class="img-responsive center-block image-thumbnail" src="@Url.Content("~/Content/Images/house2.png")" alt="Images" />
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="center-block inner-thumbnail">
+                                    <img class="img-responsive center-block image-thumbnail" src="@ad.SourceString" alt="Images" />
+                                </div>
+                            }
+                            <div class="">
+                                <h4 class="text-center h4-thumbnail">@ad.Title</h4>
+                                <h6 class="text-center">Ár: @ad.Price millió Ft | Méret: @ad.Size nm</h6>
+                                <h6 class="text-center">Budapest, @ad.District, @ad.Street </h6>
+                                <a href='@Url.Action("Details", "Ad", new { id = ad.Id })' class="a-thumbnail">
+                                    <input type="button" value="Megnézem  &raquo;" class="btn btn-primary btn-lg center-block" />
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+    <div class="row">
+    </div>
+}
+else
+{
+    //this is displayed when nobody has signed in yet
+    <div class="jumbotron">
+        <h1>IngatlanPiac</h1>
+        <p class="lead">Regisztrálj még ma, hogy böngészhess a legjobb budapesti ingatlanok között!</p>
+        <p>
+            @*redirects to a manually created registration form on the User/Create view*@
+            <a href='@Url.Action("Create", "User")' class="a-thumbnail">
+                <input type="button" value="Regisztráció  &raquo;" class="btn btn-primary btn-lg margin-medium"/>
+            </a>
+            @*redirects to a manually created login form on the User/Login view*@
+            <a href='@Url.Action("Login", "User")' class="a-thumbnail">
+                <input type="button" value="Bejelentkezés  &raquo;" class="btn btn-primary btn-lg margin-medium"/>
+            </a>
+        </p>
+        <p></p>
+    </div>
+}
+
+@*once the search button is clicked in the _AdSearchForm partial view, this script calls the SearchAds action in the HomeController and passes the string to be found in the database*@
+@section scripts
+{
+    <script type="text/javascript">
+        $(function () {
+            $("#search-btn").click(function () {
+
+                //initializing variables filled from the _AdSearchForm partial view
+                var searchTerm = $("#search-text").val();
+                var searchNumberMin = $("#search-min").val();
+                var searchNumberMax = $("#search-max").val();
+
+                //clear the error messages after potential previous searches
+                $("#error-min").text("");
+                $("#error-max").text("");
+
+                //add error messages and return to the view if negative values were populated
+                if (searchNumberMin < 0 || searchNumberMax < 0) {
+
+                    if (searchNumberMin < 0) {
+                        $("#error-min").text("Adj meg egy pozitív számot!");
+                    }
+
+                    if (searchNumberMax < 0) {
+                        $("#error-max").text("Adj meg egy pozitív számot!");
+                    }
+
+                    return View();
+                }
+
+                //get request to the SearchsAds action and passing the 3 values to it
+                $.get("Home/SearchAds", { searchText: searchTerm, searchNumberMin: searchNumberMin, searchNumberMax: searchNumberMax })
+
+                    .done(function (data) {
+
+                        //filling the div with id="ads-data" on the Index view
+                        $("#ads-data").html(data);
+                    });
+                });
+        });
+
+    </script>
+}
+

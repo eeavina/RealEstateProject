@@ -1,0 +1,9 @@
+﻿@model IEnumerable<RealEstateProjectUI.Models.AdModels>
+
+@Html.DisplayForModel(Model)
+
+@if (!Model.Any())
+{
+    <h3>Sajnáljuk...</h3>
+    <p>Úgy tűnik, nincs találat erre a keresésre.</p>
+}

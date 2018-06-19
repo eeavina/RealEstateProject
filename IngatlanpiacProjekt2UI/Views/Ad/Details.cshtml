@@ -1,0 +1,95 @@
+﻿@model RealEstateProjectUI.Models.AdModels
+
+@{
+    ViewBag.Title = "Ingatlan megtekintése";
+}
+
+<h2>@ViewBag.Title</h2>
+
+<div class="form-horizontal">
+
+    <div>
+        <h4>Részletek</h4>
+        <hr />
+        <div class="jumbotron">
+            <div class="container-fluid ">
+                <div class="col-xs-12 col-md-7">
+                    <h3 class="text-center">
+                        @Html.DisplayFor(model => model.Title)
+                    </h3>
+
+                    <div class="jumbotron jumbotron-style">
+
+                        @if (Model.PictureId != null)
+                        {
+                            <div>
+                                <img class="img-responsive center-block img-padding" src="@Model.SourceString" alt="Alternate Text" />
+                            </div>
+                        }
+                    </div>
+                    <div class="center-block">
+                        <div class="row">
+                            <div class="col-xs-12 col-md-12 table-responsive text-center">Ár: @Html.DisplayFor(model => model.Price) millió Forint | Méret: @Html.DisplayFor(model => model.Size) nm</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xs-12 col-md-5">
+                    <div class="div1">
+                        <div class="row">
+                            <div class="col-xs-6 col-md-4 table-responsive">Hirdető</div>
+                            <div class="col-xs-6 col-md-8 table-responsive">
+                                @Html.DisplayFor(model => model.UserName)
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-6 col-md-4 table-responsive">Kontakt</div>
+                            <div class="col-xs-6 col-md-8 table-responsive">
+                                @*link instead of a simple daisplay for*@
+                                <a href="mailto:@Model.UserEmail" class="text-white">@Model.UserEmail</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="div2">
+                        <div class="row">
+                            <div class="col-xs-12 col-md-12 table-responsive">Budapest, @Html.DisplayFor(model => model.District), @Html.DisplayFor(model => model.Street)</div>
+                        </div>
+
+                    </div>
+                    <div class="div3">
+                        <dl class="row">
+                            <dt class="table-responsive left-padding">Leírás</dt>
+                            <dd class="table-responsive left-padding">
+                                @Html.DisplayFor(model => model.Description)
+                            </dd>
+                        </dl>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div>
+        @*admin can only delete the ads, the ad owner user can also edit it; other users are now allowed to edit or delete*@
+        <div class="form-group">
+            <div class="col-md-offset-1 col-md-10">
+                @if (int.Parse(Session["UserId"]?.ToString()) == Model.UserId)
+                {
+                    <a href='@Url.Action("Edit", new { id = Model.Id })' class="a-thumbnail">
+                        <input type="button" value="Módosítás &raquo;" class="btn btn-primary" />
+                    </a>
+                }
+                @if (Session["UserRole"]?.ToString() == "admin" || int.Parse(Session["UserId"]?.ToString()) == Model.UserId)
+                {
+                    <a href='@Url.Action("Delete", new { id = Model.Id })' class="a-thumbnail">
+                        <input type="button" value="Törlés &raquo;" class="btn btn-primary" />
+                    </a>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+<div>
+    <p>@Html.ActionLink("Vissza a kezdőlapra", "Index", "Home")</p>
+</div>
+

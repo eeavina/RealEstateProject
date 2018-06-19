@@ -1,0 +1,65 @@
+﻿@model RealEstateProjectUI.Models.AdModels
+
+@{
+    ViewBag.Title = "Hirdetés törlése";
+}
+
+<h2>@ViewBag.Title</h2>
+<div class="form-horizontal">
+
+    <h3>Biztosan törölni szeretnéd a hirdetést?</h3>
+
+    <div>
+        <h4>Hirdetés</h4>
+        <hr />
+        <div class="col-xs-12 col-sm-6 col-md-4">
+            <div class="thumbnail thumbnail-style">
+                @*check if the ad was saved the ad with or without picture*@
+                @if (Model.PictureId == null)
+                {
+                    <div class="center-block inner-thumbnail">
+                        <img class="img-responsive center-block image-thumbnail" src="@Url.Content("~/Content/Images/house2.png")" alt="Images"/>
+                    </div>
+                }
+                else
+                {
+                    <div class="center-block image-thumbnail">
+                        <img class="img-responsive center-block image-thumbnail" src="@Model.SourceString" alt="Images"/>
+                    </div>
+                }
+                <div>
+                    <h4 class="text-center h4-thumbnail">@Model.Title</h4>
+                    <h6 class="text-center">Ár: @Model.Price millió Ft | Méret: @Model.Size nm</h6>
+                    <h6 class="text-center">Budapest, @Model.District, @Model.Street </h6>
+                    @*<a href='@Url.Action("Details", "Ad", new { id = Model.Id })' class="a-thumbnail">
+                            <input type="button" value="Megnézem  &raquo;" class="btn btn-primary btn-lg center-block" />
+                        </a>*@
+                </div>
+            </div>
+        </div>
+    </div>
+    <div>
+        <div class="form-group">
+            <div class="col-md-offset-1 col-md-10">
+
+                @using (Html.BeginForm())
+                {
+                    @Html.AntiForgeryToken()
+
+                    <div class="form-actions no-color">
+                        <a href='@Url.Action("Details", new { id = Model.Id })' class="a-thumbnail">
+                            <input type="button" value="Mégsem &raquo;" class="btn btn-primary" />
+                        </a>
+                        @if (Session["UserRole"]?.ToString() == "admin" || int.Parse(Session["UserId"]?.ToString()) == Model.UserId)
+                        {
+                            <a href='@Url.Action("Index", "Home", new { id = Model.Id })' class="a-thumbnail">
+                                <input type="submit" value="Törlés &raquo;" class="btn btn-primary" />
+                            </a>
+                        }
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+</div>

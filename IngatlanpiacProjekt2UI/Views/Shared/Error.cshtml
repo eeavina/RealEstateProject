@@ -1,0 +1,11 @@
+﻿@model System.Web.Mvc.HandleErrorInfo
+
+@{
+    ViewBag.Title = "Error";
+}
+
+<h1 class="text-danger">Hiba! "@Model.Exception.Message" típusú hiba történt.</h1>
+
+<h2 class="text-danger">A fenti hiba történt az oldal futtatása során.</h2>
+
+@Html.ActionLink("Vissza", "Index", "Home")
