@@ -1,5 +1,4 @@
 ﻿@using Microsoft.AspNet.Identity
-@*@if (Request.IsAuthenticated)*@
 @if (Session["UserRole"]?.ToString() == "admin" || Session["UserRole"]?.ToString() == "advertiser")
 {
     using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm", @class = "navbar-right" }))
@@ -10,7 +9,6 @@
             <li>
                 @Html.ActionLink("Hello " + Session["UserName"] + "!", "Index", "Home", routeValues: null, htmlAttributes: new { title = "Home" })
             </li>
-            @*<li><a href="javascript:document.getElementById('logoutForm').submit()">Kilépés</a></li>*@
             <li>
                 @Html.ActionLink("Kilépés", "LogOff", "User")
             </li>

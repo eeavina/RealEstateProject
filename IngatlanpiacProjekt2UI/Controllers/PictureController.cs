@@ -29,7 +29,6 @@ namespace RealEstateProjectUI.Controllers
             ));
 
             return View(adModels);
-            //return View(db.Picture.ToList());
         }
 
         // GET: Picture/Details/5
@@ -53,7 +52,6 @@ namespace RealEstateProjectUI.Controllers
                 adModel.SourceString = ConvertImageDataToSourceString(picture.Pic);
             }
             return View(adModel);
-            //return View(picture);
         }
 
         // GET: Picture/Create
@@ -82,7 +80,6 @@ namespace RealEstateProjectUI.Controllers
             }
 
             return View(adModels);
-            //return View(picture);
         }
 
         // GET: Picture/Edit/5
@@ -105,7 +102,6 @@ namespace RealEstateProjectUI.Controllers
                 adModels.Id = picture.Id;
             }
             return View(adModels);
-            //return View(picture);
         }
 
         // POST: Picture/Edit/5
@@ -130,7 +126,6 @@ namespace RealEstateProjectUI.Controllers
                 return RedirectToAction("Index");
             }
             return View(adModels);
-            //return View(picture);
         }
 
         // GET: Picture/Delete/5
@@ -153,7 +148,6 @@ namespace RealEstateProjectUI.Controllers
                 adModels.SourceString = ConvertImageDataToSourceString(picture.Pic);
             }
             return View(adModels);
-            //return View(picture);
         }
 
         // POST: Picture/Delete/5

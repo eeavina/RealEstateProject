@@ -22,8 +22,7 @@
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
                     <li>@Html.ActionLink("Kezdőlap", "Index", "Home")</li>
-                    @*@if (Request.IsAuthenticated)*@
-                    @*@if (Session["UserRole"]?.ToString() == "admin" || Session["UserRole"]?.ToString() == "hirdető")*@ @*admin should not be able to create new ads*@
+                    @*admin should not be able to create new ads*@
                     @if (Session["UserRole"]?.ToString() == "advertiser")
                     {
                         <li>@Html.ActionLink("Hirdetésfeladás", "Create", "Ad")</li>

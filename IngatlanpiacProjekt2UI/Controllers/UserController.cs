@@ -69,6 +69,14 @@ namespace RealEstateProjectUI.Controllers
             //get hashed password and salt from the database
             var hashedPassword = db.User.Where(u => u.Email == model.Email).Select(u => u.Password).FirstOrDefault();
             var salt = db.User.Where(u => u.Email == model.Email).Select(u => u.Salt).FirstOrDefault();
+            var emailList = db.User.Select(e => e.Email).ToList();
+
+            //validate the email address
+            if (!emailList.Contains(model.Email))
+            {
+                ModelState.AddModelError(nameof(model.Email), "Ez az email cím nem szerepel az adatbázisunkban.");
+                return View(model);
+            }
 
             //validate the password
             if (model.Password == null || Crypto.SHA256(model.Password + salt) != hashedPassword)
@@ -91,38 +99,6 @@ namespace RealEstateProjectUI.Controllers
 
             return View(model);
         }
-
-        //to be deleted if not used eventually
-
-        //
-        // GET: /User/LoginAsAdmin
-        [HttpGet]
-        [AllowAnonymous]
-        [ValidateAntiForgeryToken]
-        public ActionResult LoginAsAdmin(LoginViewModel model, string returnUrl)
-        {
-
-            if (!ModelState.IsValid)
-            {
-                return View(model);
-            }
-
-            //if (db.User.Any(us=>us.UserName == "admin"))
-            //{
-                User user = db.User.Where(u => u.Email == "admin@email.com" && u.Password == "PWadmin1!").FirstOrDefault();
-
-                if (user != null)
-                {
-                    Session["UserRole"] = user.UserRole.Name;
-                    Session["UserName"] = user.UserName;
-                    Session["UserId"] = user.Id;
-                    return RedirectToAction("Index", "Home");
-                }
-            //}
-
-            return View(model);
-        }
-
 
         public ActionResult LogOff()
         {
@@ -163,16 +139,19 @@ namespace RealEstateProjectUI.Controllers
                 if (model.Password != model.ConfirmPassword)
                 {
                     ModelState.AddModelError(nameof(model.ConfirmPassword), "A jelszavak nem egyeznek.");
+                    return View(model);
                 }
 
                 if (userList.Contains(model.UserName))
                 {
                     ModelState.AddModelError(nameof(model.UserName), "Ez a felhasználónév már foglalt.");
+                    return View(model);
                 }
 
-                if (userList.Contains(model.Email))
+                if (emailList.Contains(model.Email))
                 {
                     ModelState.AddModelError(nameof(model.Email), "Ez az email cím már foglalt.");
+                    return View(model);
                 }
 
                 if (model.ConfirmPassword == model.Password)
